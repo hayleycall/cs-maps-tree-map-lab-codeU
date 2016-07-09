@@ -78,7 +78,7 @@ public class MyTreeMap<K, V> implements Map<K, V> {
         	if (k.compareTo(currNode.key) > 0) {
         		currNode = currNode.right;
        	 	} else if (k.compareTo(currNode.key) < 0) {
-        		currNode = currNode.right;
+        		currNode = currNode.left;
         	} else {
         		return currNode;
         	}
