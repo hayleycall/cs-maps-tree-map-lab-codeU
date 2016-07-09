@@ -72,8 +72,19 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 		Comparable<? super K> k = (Comparable<? super K>) target;
 		
 		// the actual search
-        // TODO: Fill this in.
-        return null;
+        // start at the root
+        Node currNode = root;
+        while (currNode != null) {
+        	if (k.compareTo(currNode.key) > 0) {
+        		currNode = currNode.right;
+       	 	} else if (k.compareTo(currNode.key) < 0) {
+        		currNode = currNode.right;
+        	} else {
+        		return currNode;
+        	}
+       }
+       return null;
+        
 	}
 
 	/**
@@ -92,6 +103,26 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 
 	@Override
 	public boolean containsValue(Object target) {
+		// search every node in tree
+		// lets make a recursive method
+		return containsValueRecursive(root, target);
+
+	}
+
+	// recursive method to go through all nodes
+	private boolean containsValueRecursive (Node currNode, Object target) {
+		if (currNode == null) {
+			return false;
+		}
+		if (equals(currNode.value, target)) {
+			return true;
+		} 
+		if (containsValueRecursive(currNode.left, target)) {
+			return true;
+		}
+		if (containsValueRecursive(currNode.left, target)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -117,8 +148,21 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 	@Override
 	public Set<K> keySet() {
 		Set<K> set = new LinkedHashSet<K>();
-        // TODO: Fill this in.
+		// in order Traversal (adding keys)
+        inOrderAdd(root, set);
+
 		return set;
+	}
+
+	// add keys in order
+	private void inOrderAdd(Node currNode, Set<K> set) {
+		// check first if the node is null
+		if (currNode == null) {
+			return;
+		}
+		inOrderAdd(currNode.left, set);
+		set.add(currNode.key);
+		inOrderAdd(currNode.right, set);
 	}
 
 	@Override
@@ -135,8 +179,36 @@ public class MyTreeMap<K, V> implements Map<K, V> {
 	}
 
 	private V putHelper(Node node, K key, V value) {
-        // TODO: Fill this in.
-        return null;
+
+		// take code from other method to make key comparable
+		@SuppressWarnings("unchecked")
+		Comparable<? super K> k = (Comparable<? super K>) key;
+		int cmp = k.compareTo(node.key);
+		
+		if (cmp < 0) {
+			if (node.left == null) {
+				node.left = new Node(key, value);
+				size++;
+				return null;
+			} else {
+				return putHelper(node.left, key, value);
+			}
+		}
+		if (cmp > 0) {
+			if (node.right == null) {
+				node.right = new Node(key, value);
+				size++;
+				return null;
+			} else {
+				return putHelper(node.right, key, value);
+			}
+		}
+		// otherwise it was already there
+		V oldValue = node.value;
+		node.value = value;
+		return oldValue;
+	
+
 	}
 
 	@Override
